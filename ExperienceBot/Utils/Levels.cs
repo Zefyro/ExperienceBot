@@ -1,17 +1,19 @@
 ﻿namespace ExperienceBot.Utils;
 
+using System;
+
 using Newtonsoft.Json;
 
 public class Levels
 {
-	[JsonProperty("user")]
-	public User? User { get; set; }
+    [JsonProperty("user")]
+    public User User { get; set; } = default!;
 
-	[JsonProperty("levels")]
-	public Lvls? Lvls { get; set; }
+    [JsonProperty("levels")]
+    public Lvls Lvls { get; set; } = default!;
 
-	[JsonProperty("preferences")]
-	public Preferences? Preferences { get; set; }
+    [JsonProperty("preferences")]
+    public Preferences Preferences { get; set; } = default!;
 }
 public class User
 {

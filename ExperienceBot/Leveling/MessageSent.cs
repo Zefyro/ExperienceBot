@@ -39,7 +39,7 @@ public class MessageSent
 			await Level.LevelUp(level, e);
 		}
 
-		_ = Task.Run(() => Leaderboard.Update(level));
+		_ = Task.Run(() => LeaderboardUtils.Update(level));
 
 		StreamWriter sw = new(path);
 		String output = JsonConvert.SerializeObject(level, Formatting.None);

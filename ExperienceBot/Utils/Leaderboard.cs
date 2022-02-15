@@ -1,14 +1,16 @@
 ﻿namespace ExperienceBot.Utils;
 
+using System;
+
 using Newtonsoft.Json;
 
 public class Leaderboard
 {
-	[JsonProperty("leaderboard")]
-	public Ranked[]? Ranked { get; set; }
+    [JsonProperty("leaderboard")]
+    public Ranked[] Ranked { get; set; } = default!;
 
-	[JsonProperty("weekly")]
-	public Weekly[]? Weekly { get; set; }
+    [JsonProperty("weekly")]
+    public Weekly[] Weekly { get; set; } = default!;
 }
 public class Ranked
 {

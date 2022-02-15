@@ -1,21 +1,19 @@
-﻿namespace ExperienceBot.Leveling;
+﻿namespace ExperienceBot.Utils;
 
 using System;
 using System.IO;
 using System.Linq;
 
-using global::ExperienceBot.Utils;
-
 using Newtonsoft.Json;
 
-public class Leaderboard
+public class LeaderboardUtils
 {
 	public static void Update(Levels level)
 	{
 		Boolean match = false;
-		Utils.Leaderboard leaderboard = Get();
+		Leaderboard leaderboard = Get();
 
-		Ranked filtered = leaderboard.Ranked.Where(x => x.Id == level.User.Id).FirstOrDefault();
+		Ranked filtered = leaderboard.Ranked.Where(x => x.Id == level.User.Id).FirstOrDefault()!;
 
 		Ranked newEntry = new();
 
@@ -50,7 +48,7 @@ public class Leaderboard
 		Save(leaderboard);
 	}
 
-	public static Utils.Leaderboard Sort(Utils.Leaderboard leaderboard)
+	public static Leaderboard Sort(Leaderboard leaderboard)
 	{
 		leaderboard.Ranked = leaderboard.Ranked!.OrderBy(x => x.XP).ToArray();
 
@@ -61,7 +59,7 @@ public class Leaderboard
 
 		return leaderboard;
 	}
-	public static Utils.Leaderboard Get()
+	public static Leaderboard Get()
 	{
 		String path = $"./data/leaderboard.json";
 
@@ -72,7 +70,7 @@ public class Leaderboard
 
 		return JsonConvert.DeserializeObject<Utils.Leaderboard>(json)!;
 	}
-	public static void Save(Utils.Leaderboard leaderboard)
+	public static void Save(Leaderboard leaderboard)
 	{
 		String path = $"./data/leaderboard.json";
 

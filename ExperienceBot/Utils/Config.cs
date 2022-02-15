@@ -35,16 +35,16 @@ public class Leveling
 	public Range XpRange { get; set; } = new Range();
 
 	[JsonProperty("noXpChannels")]
-	public UInt64[]? NoXpChannels { get; set; } = Array.Empty<UInt64>();
+	public UInt64[] NoXpChannels { get; set; } = Array.Empty<UInt64>();
 
 	[JsonProperty("noXpRoles")]
-	public UInt64[]? NoXpRoles { get; set; } = Array.Empty<UInt64>();
+	public UInt64[] NoXpRoles { get; set; } = Array.Empty<UInt64>();
 
 	[JsonProperty("levelUpAnnouncementsId")]
 	public UInt64 LevelUpChannel { get; set; } = 0;
 
 	[JsonProperty("levelRoleRewards")]
-	public LevelRewards[]? LevelRoleRewards { get; set; } = Array.Empty<LevelRewards>();
+	public LevelRewards[] LevelRoleRewards { get; set; } = Array.Empty<LevelRewards>();
 
 	[JsonProperty("stackRewards")]
 	public Boolean StackRewards { get; set; } = true;

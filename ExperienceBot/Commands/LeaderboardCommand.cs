@@ -7,6 +7,8 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 
+using global::ExperienceBot.Utils;
+
 public class LeaderboardCommand : BaseCommandModule
 {
 	[Command("leaderboard")]
@@ -14,7 +16,7 @@ public class LeaderboardCommand : BaseCommandModule
 	[Description("Displays the server's leaderboard.")]
 	public async Task Leaderboard(CommandContext ctx)
 	{
-		String formattedLeaderboard = Leveling.Leaderboard.Get().ToString()!;
+		String formattedLeaderboard = LeaderboardUtils.Get().ToString()!;
 
 		DiscordEmbed embed = new DiscordEmbedBuilder
 		{
