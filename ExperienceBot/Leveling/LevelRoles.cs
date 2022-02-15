@@ -1,38 +1,41 @@
-﻿using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
+﻿namespace ExperienceBot.Leveling;
 
-using ExperienceBot.Utils;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+
+using DSharpPlus.Entities;
+
+using global::ExperienceBot.Utils;
 
 using Newtonsoft.Json;
 
-namespace ExperienceBot.Leveling
+public class LevelRoles
 {
-    public class LevelRoles
-    {
-        public static async Task GrantRewards(DiscordMember member, Levels? level)
-        {
-            DiscordRole RoleReward;
+	public static async Task GrantRewards(DiscordMember member, Levels? level)
+	{
+		DiscordRole RoleReward;
 
-            String path = $"./data/levels/{member.Id}.json";
-            StreamReader sr = new StreamReader(path);
+		String path = $"./data/levels/{member.Id}.json";
+		StreamReader sr = new(path);
 
-            String json = sr.ReadToEnd();
-            sr.Close();
+		String json = sr.ReadToEnd();
+		sr.Close();
 
-            Levels levels = JsonConvert.DeserializeObject<Levels>(json);
+		Levels levels = JsonConvert.DeserializeObject<Levels>(json)!;
 
-            if (level != null)
-                levels = level;
+		if(level != null)
+		{
+			levels = level;
+		}
 
-            foreach (var reward in Utils.Leveling.LevelRoleRewards)
-            {
-                if (levels.Lvls.Lvl >= reward.RequiredLevel)
-                {
-                    RoleReward = ExperienceBot.Guild.GetRole(reward.RoleId);
-                    await member.GrantRoleAsync(RoleReward);
-                }
-            }
-        }
-    }
+		foreach(LevelRewards? reward in ExperienceBot.Configuration.Modules.Leveling.LevelRoleRewards)
+		{
+			if(levels.Lvls.Lvl >= reward.RequiredLevel)
+			{
+				RoleReward = ExperienceBot.Guild!.GetRole(reward.RoleId);
+				await member.GrantRoleAsync(RoleReward);
+			}
+		}
+	}
 }
