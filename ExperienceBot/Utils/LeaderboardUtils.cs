@@ -1,9 +1,13 @@
 ﻿namespace ExperienceBot.Utils;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
+using System.Text;
+using System.Threading.Tasks;
+
+using DSharpPlus.Entities;
 
 using Newtonsoft.Json;
 
@@ -11,7 +15,7 @@ public static class LeaderboardUtils
 {
 	public static void Update(Levels level)
 	{
-		Leaderboard leaderboard = Get();
+		Leaderboard leaderboard = Deserialize();
 
 		RankedUser filtered = leaderboard.Ranked.Where(x => x.Id == level.User.Id).FirstOrDefault()!;
 
@@ -39,7 +43,7 @@ public static class LeaderboardUtils
 		}
 
 		//leaderboard = Sort(leaderboard);
-		Save(leaderboard);
+		Serialize(leaderboard);
 	}
 
 	public static Leaderboard Sort(Leaderboard leaderboard)
@@ -54,7 +58,7 @@ public static class LeaderboardUtils
 		return leaderboard;
 	}
 
-	public static Leaderboard Get()
+	public static Leaderboard Deserialize()
 	{
 		String path = $"./data/leaderboard.json";
 
@@ -66,7 +70,7 @@ public static class LeaderboardUtils
 		return JsonConvert.DeserializeObject<Leaderboard>(json)!;
 	}
 
-	public static void Save(Leaderboard leaderboard)
+	public static void Serialize(Leaderboard leaderboard)
 	{
 		String path = $"./data/leaderboard.json";
 
@@ -74,5 +78,25 @@ public static class LeaderboardUtils
 		String output = JsonConvert.SerializeObject(leaderboard, Formatting.None);
 		sw.Write(output);
 		sw.Close();
+	}
+
+	public static async Task<String> PrettyPrint(Int32 startIndex, Int32 count)
+	{
+		Leaderboard leaderboard = Deserialize();
+
+		IEnumerable<RankedUser> users = leaderboard.Ranked.Skip(startIndex).Take(count);
+
+		StringBuilder builder = new();
+
+		for(Int32 i = 0; i < users.Count(); i++)
+		{
+			String displayName = (await ExperienceBot.Guild.GetMemberAsync(users.ElementAt(i).Id)).DisplayName
+				?? $"User missing [{users.ElementAt(i).Id}]";
+
+			builder.Append($"**#{i} - {displayName} - Level {users.ElementAt(i).Level}\n");
+			builder.Append($"{users.ElementAt(i).XP} XP -- {users.ElementAt(i).Messages} Messages\n\n");
+		}
+
+		return builder.ToString().TrimEnd('\n');
 	}
 }

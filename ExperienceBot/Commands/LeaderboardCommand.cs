@@ -16,7 +16,7 @@ public class LeaderboardCommand : BaseCommandModule
 	[Description("Displays the server's leaderboard.")]
 	public async Task Leaderboard(CommandContext ctx)
 	{
-		String formattedLeaderboard = LeaderboardUtils.Get().ToString()!;
+		String formattedLeaderboard = LeaderboardUtils.Deserialize().ToString()!;
 
 		DiscordEmbed embed = new DiscordEmbedBuilder
 		{
