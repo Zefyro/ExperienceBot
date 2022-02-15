@@ -18,9 +18,7 @@ using Newtonsoft.Json;
 
 internal partial class ExperienceBot
 {
-	private static void Main(String[] args) => MainAsync().GetAwaiter().GetResult();
-
-	private static async Task MainAsync()
+	private static async Task Main()
 	{
 		if(!Directory.Exists("./data") || !File.Exists("./data/config.json"))
 		{
