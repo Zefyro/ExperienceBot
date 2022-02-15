@@ -6,14 +6,14 @@ using Newtonsoft.Json;
 
 public class Levels
 {
-    [JsonProperty("user")]
-    public User User { get; set; } = default!;
+	[JsonProperty("user")]
+	public User User { get; set; } = default!;
 
-    [JsonProperty("levels")]
-    public Lvls Lvls { get; set; } = default!;
+	[JsonProperty("levels")]
+	public Lvls Lvls { get; set; } = default!;
 
-    [JsonProperty("preferences")]
-    public Preferences Preferences { get; set; } = default!;
+	[JsonProperty("preferences")]
+	public Preferences Preferences { get; set; } = default!;
 }
 public class User
 {
