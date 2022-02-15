@@ -1,45 +1,49 @@
-﻿using DSharpPlus;
+﻿namespace ExperienceBot.Leveling;
+
+using System;
+using System.IO;
+using System.Threading.Tasks;
+
+using DSharpPlus;
 using DSharpPlus.EventArgs;
 
+using global::ExperienceBot.Utils;
+
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
-using ExperienceBot.Utils;
-
-namespace ExperienceBot.Leveling
+public class MessageSent
 {
-    public class MessageSent
-    {
-        public static async Task MessageSentEvent(DiscordClient s, MessageCreateEventArgs e)
-        {
-            String path = $"./data/levels/{e.Author.Id}.json";
+	public static async Task MessageSentEvent(DiscordClient s, MessageCreateEventArgs e)
+	{
+		String path = $"./data/levels/{e.Author.Id}.json";
 
-            Int32 xp = ExperienceBot.Random.Next(
-                Utils.Leveling.XpRange.Min,
-                Utils.Leveling.XpRange.Max);
+		Int32 xp = ExperienceBot.Random.Next(
+			Leveling.XpRange.Min,
+			Leveling.XpRange.Max);
 
-            StreamReader sr = new StreamReader(path);
+		StreamReader sr = new(path);
 
-            String json = sr.ReadToEnd();
-            sr.Close();
+		String json = sr.ReadToEnd();
+		sr.Close();
 
-            Levels level = JsonConvert.DeserializeObject<Levels>(json);
+		Levels level = JsonConvert.DeserializeObject<Levels>(json)!;
 
-            level.User.Id = e.Author.Id;
-            level.User.Name = $"{e.Author.Username}#{e.Author.Discriminator}";
-            level.Lvls.Messages++;
-            level.Lvls.TotalXp += xp;
-            level.Lvls.Xp += xp;
+		level.User!.Id = e.Author.Id;
+		level.User.Name = $"{e.Author.Username}#{e.Author.Discriminator}";
+		level.Lvls!.Messages++;
+		level.Lvls.TotalXp += xp;
+		level.Lvls.Xp += xp;
 
-            if (level.Lvls.Xp >= level.Lvls.ReqXp)
-                await Level.LevelUp(level, e);
+		if(level.Lvls.Xp >= level.Lvls.ReqXp)
+		{
+			await Level.LevelUp(level, e);
+		}
 
-            _ = Task.Run(() => Leaderboard.Update(level));
+		_ = Task.Run(() => Leaderboard.Update(level));
 
-            StreamWriter sw = new StreamWriter(path);
-            String output = JsonConvert.SerializeObject(level, Formatting.None);
-            sw.Write(output);
-            sw.Close();
-        }
-    }
+		StreamWriter sw = new(path);
+		String output = JsonConvert.SerializeObject(level, Formatting.None);
+		sw.Write(output);
+		sw.Close();
+	}
 }

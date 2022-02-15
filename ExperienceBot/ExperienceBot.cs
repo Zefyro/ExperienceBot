@@ -1,16 +1,14 @@
-﻿using DSharpPlus;
-using DSharpPlus.CommandsNext;
-using DSharpPlus.Entities;
-using ExperienceBot.Utils;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+﻿namespace ExperienceBot;
 
-namespace ExperienceBot
+using System;
+
+using DSharpPlus.Entities;
+
+using Microsoft.Extensions.Logging;
+
+internal partial class ExperienceBot
 {
-    partial class ExperienceBot
-    {
-        public readonly EventId BotEventId = new EventId(42, "ExperienceBot");
-        public static Random Random = new Random();
-        public static DiscordGuild? Guild;
-    }
+	public readonly EventId BotEventId = new(42, "ExperienceBot");
+	public static Random Random = new();
+	public static DiscordGuild? Guild;
 }

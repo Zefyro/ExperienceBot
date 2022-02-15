@@ -1,19 +1,12 @@
-﻿using DSharpPlus.CommandsNext;
-using DSharpPlus.CommandsNext.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿namespace ExperienceBot.Commands;
+
 using System.Threading.Tasks;
 
-namespace ExperienceBot.Commands
-{
-    public class WeeklyTopCommand : BaseCommandModule
-    {
-        [Command("weekly")]
-        public async Task Weekly(CommandContext ctx)
-        {
+using DSharpPlus.CommandsNext;
+using DSharpPlus.CommandsNext.Attributes;
 
-        }
-    }
+public class WeeklyTopCommand : BaseCommandModule
+{
+	[Command("weekly")]
+	public Task Weekly(CommandContext ctx) => Task.CompletedTask;
 }
