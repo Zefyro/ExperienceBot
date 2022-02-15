@@ -124,14 +124,18 @@ internal partial class ExperienceBot
 			discord.MessageCreated += async (s, e) =>
 #pragma warning restore CS1998
 			{
-				if(!e.Author.IsBot && e.Message.Content.Length >= Configuration.Modules.Leveling.MinMessageLength)
+				_ = Task.Run( async () =>
 				{
-					if(!Configuration.Modules.Leveling.NoXpChannels!.Contains(e.Channel.Id))
+					if(!e.Author.IsBot && e.Message.Content.Length >= Configuration.Modules.Leveling.MinMessageLength)
 					{
-						_ = Task.Run(() => NewMember.NewMemberEvent(s, e));
-						_ = Task.Run(() => MessageSent.MessageSentEvent(s, e));
+						if(!Configuration.Modules.Leveling.NoXpChannels!.Contains(e.Channel.Id))
+						{
+							// these HAVE to be in order
+							await Task.Run(() => NewMember.NewMemberEvent(s, e));
+							await Task.Run(() => MessageSent.MessageSentEvent(s, e));
+						}
 					}
-				}
+				});
 			};
 
 			commands.RegisterCommands<RankCommand>();

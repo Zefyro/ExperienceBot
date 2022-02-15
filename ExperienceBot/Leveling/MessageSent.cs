@@ -15,13 +15,11 @@ public class MessageSent
 {
 	public static async Task MessageSentEvent(DiscordClient s, MessageCreateEventArgs e)
 	{
-		String path = $"./data/levels/{e.Author.Id}.json";
-
 		Int32 xp = ExperienceBot.Random.Next(
 			ExperienceBot.Configuration.Modules.Leveling.XpRange.Min,
-            ExperienceBot.Configuration.Modules.Leveling.XpRange.Max);
+			ExperienceBot.Configuration.Modules.Leveling.XpRange.Max);
 
-		StreamReader sr = new(path);
+		StreamReader sr = new($"./data/levels/{e.Author.Id}.json");
 
 		String json = sr.ReadToEnd();
 		sr.Close();
@@ -41,7 +39,7 @@ public class MessageSent
 
 		_ = Task.Run(() => LeaderboardUtils.Update(level));
 
-		StreamWriter sw = new(path);
+		StreamWriter sw = new($"./data/levels/{e.Author.Id}.json");
 		String output = JsonConvert.SerializeObject(level, Formatting.None);
 		sw.Write(output);
 		sw.Close();
