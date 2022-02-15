@@ -17,7 +17,7 @@ public class RankCommand : BaseCommandModule
 {
 	[Priority(0)]
 	[Command("rank")]
-	[Aliases("me")]
+	[Aliases("stats")]
 	public async Task Rank(CommandContext ctx)
 	{
 		String path = $"./data/levels/{ctx.Member.Id}.json";
@@ -49,7 +49,6 @@ public class RankCommand : BaseCommandModule
 
 	[Priority(1)]
 	[Command("rank")]
-	[Aliases("stats")]
 	public async Task Rank(CommandContext ctx, DiscordMember member)
 	{
 		String path = $"./data/levels/{member.Id}.json";
@@ -61,7 +60,9 @@ public class RankCommand : BaseCommandModule
 				await ctx.RespondAsync($"{member.Mention} is a bot and therefore cannot be ranked.");
 				return;
 			}
+
 			await ctx.RespondAsync($"{member.Username}#{member.Discriminator} is not ranked yet.");
+
 			return;
 		}
 

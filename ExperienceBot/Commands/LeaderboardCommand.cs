@@ -14,9 +14,12 @@ public class LeaderboardCommand : BaseCommandModule
 	[Command("leaderboard")]
 	[Aliases("levels", "lb")]
 	[Description("Displays the server's leaderboard.")]
-	public async Task Leaderboard(CommandContext ctx)
+	public async Task Leaderboard(CommandContext ctx) => await Leaderboard(ctx, 0);
+
+	[Command("leaderboard")]
+	public async Task Leaderboard(CommandContext ctx, Int32 page)
 	{
-		String formattedLeaderboard = LeaderboardUtils.Deserialize().ToString()!;
+		String formattedLeaderboard = await LeaderboardUtils.PrettyPrint((page - 1) * 20, 20);
 
 		DiscordEmbed embed = new DiscordEmbedBuilder
 		{
