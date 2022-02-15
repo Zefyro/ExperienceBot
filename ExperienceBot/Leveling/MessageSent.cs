@@ -18,8 +18,8 @@ public class MessageSent
 		String path = $"./data/levels/{e.Author.Id}.json";
 
 		Int32 xp = ExperienceBot.Random.Next(
-			Leveling.XpRange.Min,
-			Leveling.XpRange.Max);
+			ExperienceBot.Configuration.Modules.Leveling.XpRange.Min,
+            ExperienceBot.Configuration.Modules.Leveling.XpRange.Max);
 
 		StreamReader sr = new(path);
 

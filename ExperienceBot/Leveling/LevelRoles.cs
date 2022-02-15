@@ -29,7 +29,7 @@ public class LevelRoles
 			levels = level;
 		}
 
-		foreach(LevelRewards? reward in Leveling.LevelRoleRewards!)
+		foreach(LevelRewards? reward in ExperienceBot.Configuration.Modules.Leveling.LevelRoleRewards!)
 		{
 			if(levels.Lvls!.Lvl >= reward.RequiredLevel)
 			{

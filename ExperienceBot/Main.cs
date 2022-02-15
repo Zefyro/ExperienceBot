@@ -23,99 +23,115 @@ internal partial class ExperienceBot
 		if(!Directory.Exists("./data") || !File.Exists("./data/config.json"))
 		{
 			Directory.CreateDirectory("./data");
+			Config config = new();
 
 			Console.WriteLine("Please enter a valid discord bot token:");
-			Config.Token = Console.ReadLine()!;
+			config.Token = Console.ReadLine()!;
 
-			Console.WriteLine("Please enter a valid Guild Id:");
-			Config.Guild = Convert.ToUInt64(Console.ReadLine());
+			Console.WriteLine("Please enter a valid GuildId Id:");
+			config.GuildId = Convert.ToUInt64(Console.ReadLine());
 
-			Console.WriteLine("Default prefix is (--). Would you like to add a prefix? (Y/N)");
-			String A1 = Console.ReadLine()!;
+			Console.WriteLine("The default prefix is --. Would you like to add a prefix? (Y/N)");
+			String answer = Console.ReadLine()!;
 
-			if(A1.ToLower() == ("y" ?? "yes"))
+			if(answer.ToLower() == "y" || answer.ToLower() == "yes")
 			{
 				Console.WriteLine("Enter your prefix:");
-				Config.Prefixes = Config.Prefixes.Append(Console.ReadLine()).ToArray()!;
+				config.Prefixes = config.Prefixes.Append(Console.ReadLine()).ToArray()!;
 			}
-			else if(A1.ToLower() == ("n" ?? "no"))
+			else if(answer.ToLower() == "n" || answer.ToLower() == "no")
 			{
 				Console.WriteLine("Alright, just know that you can add one from the config at a later date.");
 			}
 			else
 			{
-				Console.WriteLine("I take that as a no...");
+				Console.WriteLine("I'll take that as a no...");
 			}
 
-			Console.WriteLine("Would you like to enable module 'Leveling'? (Y/N)");
-			String A2 = Console.ReadLine()!;
-			if(A2.ToLower() == ("y" ?? "yes"))
+			Console.WriteLine("Would you like to enable the leveling module? (Y/N)");
+			answer = Console.ReadLine()!;
+
+			if(answer.ToLower() == "y" || answer.ToLower() == "yes")
 			{
-				Utils.Leveling.Enabled = true;
+				config.Modules.Leveling.Enabled = true;
+
 				Console.WriteLine("What should the minimum message length be?");
-				Utils.Leveling.MinMessageLenght = Convert.ToInt16(Console.ReadLine());
+				config.Modules.Leveling.MinMessageLength = Convert.ToInt16(Console.ReadLine());
+
 				Console.WriteLine("What should the xp range be? (Min,Max)");
 				String[] xpRange = Console.ReadLine()!.Trim().Split(',');
-				Utils.Leveling.XpRange.Min = Convert.ToInt16(xpRange[0]);
-				Utils.Leveling.XpRange.Max = Convert.ToInt16(xpRange[1]);
+
+				config.Modules.Leveling.XpRange.Min = Convert.ToInt16(xpRange[0]);
+				config.Modules.Leveling.XpRange.Max = Convert.ToInt16(xpRange[1]);
+
 				Console.WriteLine("What should the level up announcement channel be? (Channel Id)");
-				Utils.Leveling.LevelUpChannel = Convert.ToUInt64(Console.ReadLine());
+				config.Modules.Leveling.LevelUpChannel = Convert.ToUInt64(Console.ReadLine());
 			}
-			else if(A2.ToLower() == ("n" ?? "no"))
+			else if(answer.ToLower() == "n" || answer.ToLower() == "no")
 			{
 				Console.WriteLine("Alright, just know that you can enable it from the config at a later date.");
 			}
 			else
 			{
-				Console.WriteLine("I take that as a no...");
+				Console.WriteLine("I'll take that as a no...");
 			}
 
-			Console.WriteLine("You can edit more stuff from the config.json.\n\nPress any key to continue...");
-			Console.ReadKey();
+			Console.WriteLine("You can edit more stuff in the config.json file.\n\nPress any key to continue...");
 
-			using StreamWriter sw = new("./data/config.json");
-			Config config = new();
+			StreamWriter sw;
+
+			if(File.Exists("./data/config.json"))
+			{
+				sw = new(File.Create("./data/config.json"));
+			}
+			else
+			{
+				sw = new("./data/config.json");
+			}
+
 			sw.Write(JsonConvert.SerializeObject(config, Formatting.Indented));
+			Console.ReadKey();
 		}
 
-		using(StreamReader sr = new("./data/config.json"))
-		{
-			JsonConvert.DeserializeObject<Config>(sr.ReadToEnd());
-		}
+		using StreamReader sr = new("./data/config.json");
+		Configuration = JsonConvert.DeserializeObject<Config>(sr.ReadToEnd())!;
+		
 
 		DiscordClient? discord = new(new DiscordConfiguration()
 		{
 			AutoReconnect = true,
-			Token = Config.Token,
+			Token = Configuration.Token,
 			TokenType = TokenType.Bot,
 			MinimumLogLevel = LogLevel.Information
 		});
 
 		CommandsNextConfiguration? commandsConfig = new()
 		{
-			StringPrefixes = Config.Prefixes,
+			StringPrefixes = Configuration.Prefixes,
 			DmHelp = false,
 			EnableMentionPrefix = false
 		};
 
 		CommandsNextExtension? commands = discord.UseCommandsNext(commandsConfig);
 
-		Guild = await discord.GetGuildAsync(Config.Guild);
+		Guild = await discord.GetGuildAsync(Configuration.GuildId);
 
-		if(Utils.Leveling.Enabled)
+		if(Configuration.Modules.Leveling.Enabled)
 		{
-			discord.MessageCreated += (s, e) =>
+			LevelUpChannel = Guild.GetChannel(Configuration.Modules.Leveling.LevelUpChannel);
+
+#pragma warning disable CS1998
+			discord.MessageCreated += async (s, e) =>
+#pragma warning restore CS1998
 			{
-				if(!e.Author.IsBot && e.Message.Content.Length >= Utils.Leveling.MinMessageLenght)
+				if(!e.Author.IsBot && e.Message.Content.Length >= Configuration.Modules.Leveling.MinMessageLength)
 				{
-					if(!Utils.Leveling.NoXpChannels!.Contains(e.Channel.Id))
+					if(!Configuration.Modules.Leveling.NoXpChannels!.Contains(e.Channel.Id))
 					{
 						_ = Task.Run(() => NewMember.NewMemberEvent(s, e));
 						_ = Task.Run(() => MessageSent.MessageSentEvent(s, e));
 					}
 				}
-
-				return System.Threading.Tasks.Task.CompletedTask;
 			};
 
 			commands.RegisterCommands<RankCommand>();

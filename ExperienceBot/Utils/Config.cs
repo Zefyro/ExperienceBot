@@ -7,50 +7,50 @@ using Newtonsoft.Json;
 public class Config
 {
 	[JsonProperty("token")]
-	public static String Token { get; set; } = "";
+	public String Token { get; set; } = "";
 
 	[JsonProperty("prefixes")]
-	public static String[] Prefixes { get; set; } = { "--" };
+	public String[] Prefixes { get; set; } = { "--" };
 
 	[JsonProperty("guildId")]
-	public static UInt64 Guild { get; set; } = 0;
+	public UInt64 GuildId { get; set; } = 0;
 
 	[JsonProperty("modules")]
-	public static Modules Modules { get; set; } = new Modules();
+	public Modules Modules { get; set; } = new Modules();
 }
 public class Modules
 {
 	[JsonProperty("leveling")]
-	public static Leveling Leveling { get; set; } = new Leveling();
+	public Leveling Leveling { get; set; } = new Leveling();
 }
 public class Leveling
 {
 	[JsonProperty("enabled")]
-	public static Boolean Enabled { get; set; } = false;
+	public Boolean Enabled { get; set; } = false;
 
 	[JsonProperty("minMessageLength")]
-	public static Int16 MinMessageLenght { get; set; } = 0;
+	public Int16 MinMessageLength { get; set; } = 0;
 
 	[JsonProperty("xpRange")]
-	public static Range XpRange { get; set; } = new Range();
+	public Range XpRange { get; set; } = new Range();
 
 	[JsonProperty("noXpChannels")]
-	public static UInt64[]? NoXpChannels { get; set; } = Array.Empty<UInt64>();
+	public UInt64[]? NoXpChannels { get; set; } = Array.Empty<UInt64>();
 
 	[JsonProperty("noXpRoles")]
-	public static UInt64[]? NoXpRoles { get; set; } = Array.Empty<UInt64>();
+	public UInt64[]? NoXpRoles { get; set; } = Array.Empty<UInt64>();
 
 	[JsonProperty("levelUpAnnouncementsId")]
-	public static UInt64 LevelUpChannel { get; set; } = 0;
+	public UInt64 LevelUpChannel { get; set; } = 0;
 
 	[JsonProperty("levelRoleRewards")]
-	public static LevelRewards[]? LevelRoleRewards { get; set; } = Array.Empty<LevelRewards>();
+	public LevelRewards[]? LevelRoleRewards { get; set; } = Array.Empty<LevelRewards>();
 
 	[JsonProperty("stackRewards")]
-	public static Boolean StackRewards { get; set; } = true;
+	public Boolean StackRewards { get; set; } = true;
 
 	[JsonProperty("commands")]
-	public static Commands Commands { get; set; } = new Commands();
+	public Commands Commands { get; set; } = new Commands();
 }
 public class Range
 {
