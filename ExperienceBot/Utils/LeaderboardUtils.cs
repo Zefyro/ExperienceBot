@@ -83,6 +83,7 @@ public static class LeaderboardUtils
 	public static async Task<String> PrettyPrint(Int32 startIndex, Int32 count)
 	{
 		Leaderboard leaderboard = Deserialize();
+		leaderboard = Sort(leaderboard);
 
 		IEnumerable<RankedUser> users = leaderboard.Ranked.Skip(startIndex).Take(count);
 
